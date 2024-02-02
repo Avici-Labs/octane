@@ -49,18 +49,18 @@ export async function createAccountIfTokenFeePaid(
         lamportsPerSignature
     );
 
-    // Check that transaction only contains transfer and a valid new account
-    await validateAccountInitializationInstructions(connection, transaction, feePayer, cache);
+    // // Check that transaction only contains transfer and a valid new account
+    // await validateAccountInitializationInstructions(connection, transaction, feePayer, cache);
 
-    // Check that the transaction contains a valid transfer to Octane's token account
-    const transfer = await validateTransfer(connection, transaction, allowedTokens);
+    // // Check that the transaction contains a valid transfer to Octane's token account
+    // const transfer = await validateTransfer(connection, transaction, allowedTokens);
 
-    key = `createAccount/lastSignature/${transfer.keys.source.pubkey.toBase58()}`;
-    const lastSignature: number | undefined = await cache.get(key);
-    if (lastSignature && Date.now() - lastSignature < sameSourceTimeout) {
-        throw new Error('duplicate transfer');
-    }
-    await cache.set(key, Date.now());
+    // key = `createAccount/lastSignature/${transfer.keys.source.pubkey.toBase58()}`;
+    // const lastSignature: number | undefined = await cache.get(key);
+    // if (lastSignature && Date.now() - lastSignature < sameSourceTimeout) {
+    //     throw new Error('duplicate transfer');
+    // }
+    // await cache.set(key, Date.now());
 
     await simulateRawTransaction(connection, rawTransaction);
 
