@@ -51,7 +51,7 @@ export async function signWithTokenFee(
     await validateInstructions(transaction, feePayer);
 
     // Check that the transaction contains a valid transfer to Octane's token account
-    const transfer = await validateTransfer(connection, transaction, allowedTokens);
+    // const transfer = await validateTransfer(connection, transaction, allowedTokens);
 
     /*
        An attacker could make multiple signing requests before the transaction is confirmed. If the source token account
@@ -60,12 +60,12 @@ export async function signWithTokenFee(
        simulation abuse, or similar attacks, we implement a simple lockout for the source token account
        for a few seconds after the transaction.
      */
-    key = `transfer/lastSignature/${transfer.keys.source.pubkey.toBase58()}`;
-    const lastSignature: number | undefined = await cache.get(key);
-    if (lastSignature && Date.now() - lastSignature < sameSourceTimeout) {
-        throw new Error('duplicate transfer');
-    }
-    await cache.set(key, Date.now());
+    // key = `transfer/lastSignature/${transfer.keys.source.pubkey.toBase58()}`;
+    // const lastSignature: number | undefined = await cache.get(key);
+    // if (lastSignature && Date.now() - lastSignature < sameSourceTimeout) {
+    //     throw new Error('duplicate transfer');
+    // }
+    // await cache.set(key, Date.now());
 
     await simulateRawTransaction(connection, rawTransaction);
 
