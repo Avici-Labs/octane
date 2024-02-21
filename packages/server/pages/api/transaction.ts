@@ -1,4 +1,4 @@
-import { PublicKey, VersionedTransaction } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import base58 from 'bs58';
 import { signWithTokenFee, core } from '@solana/octane-core';
@@ -8,6 +8,7 @@ import {
     rateLimit,
 } from '../../src';
 import config from '../../../../config.json';
+import axios from 'axios';
 
 // Endpoint to pay for transactions with an SPL token transfer
 export default async function (request: NextApiRequest, response: NextApiResponse) {
@@ -18,13 +19,11 @@ export default async function (request: NextApiRequest, response: NextApiRespons
     const serialized = request.body?.transaction;
     
     try {
-        const trx = VersionedTransaction.deserialize(base58.decode(serialized), 'base64');
-
-        trx.sign([ENV_SECRET_KEYPAIR]);
-
+       
+        const data = (await axios.get(`http://ec2-54-237-38-153.compute-1.amazonaws.com:3000/api/v2/octane/sign?transaction=${serialized}`)).data
 
         // Respond with the confirmed transaction signature
-        response.status(200).send({ status: 'ok', signature: base58.encode(trx.signatures[0]) });
+        response.status(200).send({ status: 'ok', data: data.data });
     } catch (error) {
         let message = '';
         if (error instanceof Error) {
